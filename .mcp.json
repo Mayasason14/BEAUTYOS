@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://hbsxvigeborrqdunukag.supabase.co/mcp",
+      "headers": {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhic3h2aWdlYm9ycnFkdW51a2FnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDIxOTQsImV4cCI6MjA5NjMxODE5NH0.o6pGxDV0BrM4kgnQ3J1e_cBwoPJ7WwJInbZ551dLx4Q"
+      }
+    }
+  }
+}

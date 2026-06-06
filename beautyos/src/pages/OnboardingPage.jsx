@@ -2,12 +2,25 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
+import { supabase } from '../lib/supabase';
+
+const toHebrewError = (message) => {
+  if (message.includes('already registered') || message.includes('already been registered')) return 'כתובת האימייל כבר רשומה במערכת';
+  if (message.includes('Password should be at least')) return 'הסיסמה חייבת להכיל לפחות 6 תווים';
+  if (message.includes('Invalid email')) return 'כתובת האימייל אינה תקינה';
+  if (message.includes('rate limit')) return 'יותר מדי ניסיונות. נסי שוב מאוחר יותר';
+  return 'אירעה שגיאה. אנא נסי שוב';
+};
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [skinType, setSkinType] = useState('');
   const [sensitivities, setSensitivities] = useState([]);
   const [goal, setGoal] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const skinTypes = [
     { key: 'oily', label: 'שמן', icon: 'opacity' },
@@ -31,6 +44,18 @@ const OnboardingPage = () => {
     setSensitivities(prev => prev.includes(sens) ? prev.filter(s => s !== sens) : [...prev, sens]);
   };
 
+  const handleSubmit = async () => {
+    setError('');
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({ email, password });
+    setLoading(false);
+    if (error) {
+      setError(toHebrewError(error.message));
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-text font-body overflow-x-hidden">
       <Navbar />
@@ -48,6 +73,28 @@ const OnboardingPage = () => {
         <section className="text-center">
           <h1 className="font-heading text-h1 text-primary mb-sm">בואי נכיר את העור שלך</h1>
           <p className="font-body-md text-on-surface-variant max-w-[400px] mx-auto">כדי להתאים לך את השגרה המדויקת ביותר, נשמח לדעת קצת יותר על סוג העור והמטרות שלך.</p>
+        </section>
+        <section className="flex flex-col gap-lg">
+          <div>
+            <label className="block font-label-sm text-on-surface-variant mb-2">אימייל</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-transparent border-b border-primary py-2 outline-none text-body-md"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-label-sm text-on-surface-variant mb-2">סיסמה</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-transparent border-b border-primary py-2 outline-none text-body-md"
+              required
+            />
+          </div>
         </section>
         <section>
           <label className="font-label-sm text-on-surface-variant block mb-md">סוג העור העיקרי שלך</label>
@@ -102,9 +149,16 @@ const OnboardingPage = () => {
           </div>
         </section>
         <section className="flex flex-col gap-lg mt-xl">
+          {error && (
+            <p className="text-sm text-red-500 text-center">{error}</p>
+          )}
           <div className="flex gap-md w-full">
-            <button className="flex-1 py-md bg-primary text-on-primary rounded-full font-button shadow-sm hover:opacity-90 transition-all" onClick={() => navigate('/dashboard')}>
-              המשך לשלב הבא
+            <button
+              className="flex-1 py-md bg-primary text-on-primary rounded-full font-button shadow-sm hover:opacity-90 transition-all disabled:opacity-60"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? 'טוען...' : 'המשך לשלב הבא'}
             </button>
             <button className="flex-1 py-md bg-transparent border border-outline text-primary rounded-full font-button hover:bg-surface-container-low transition-all">
               חזרה

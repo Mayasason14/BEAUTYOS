@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
+import { supabase } from '../lib/supabase';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Dummy login
-    console.log('Login:', email, password);
+    setError('');
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -40,11 +51,15 @@ const LoginPage = () => {
                 required
               />
             </div>
+            {error && (
+              <p className="text-sm text-red-500 text-center">{error}</p>
+            )}
             <button
               type="submit"
-              className="w-full bg-primary text-on-primary rounded-full py-4 font-button hover:opacity-90 transition-all"
+              disabled={loading}
+              className="w-full bg-primary text-on-primary rounded-full py-4 font-button hover:opacity-90 transition-all disabled:opacity-60"
             >
-              התחברי
+              {loading ? 'טוען...' : 'התחברי'}
             </button>
           </form>
           <div className="text-center mt-6">
