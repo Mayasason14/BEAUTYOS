@@ -235,28 +235,28 @@ const InventoryPage = () => {
     <div className="bg-background text-text font-body">
       <Navbar />
       <main className="max-w-5xl mx-auto px-6 pt-8 pb-32">
-        <section className="mb-xl">
-          <div className="flex justify-between items-end mb-md">
+        <section className="mb-8">
+          <div className="flex justify-between items-end mb-4">
             <div>
-              <h2 className="font-h1 text-h1 text-primary">המדף שלי</h2>
-              <p className="font-body-md text-secondary mt-xs">ניהול מלאי מוצרי הטיפוח שלך</p>
+              <h2 className="text-3xl font-bold text-[#2C2C2A]">המדף שלי</h2>
+              <p className="text-base text-[#5C5751] mt-1">ניהול מלאי מוצרי הטיפוח שלך</p>
             </div>
             <div className="flex gap-4">
-              <div className="text-center px-4 py-2 bg-surface-container-high rounded-xl">
-                <span className="block font-h3 text-h3 text-primary">{products.length}</span>
-                <span className="font-label-sm text-on-surface-variant uppercase tracking-wider">מוצרים</span>
+              <div className="text-center px-4 py-2 bg-[#F5EFE8] rounded-xl border border-[#E8E0D8]">
+                <span className="block text-2xl font-bold text-[#2C2C2A]">{products.length}</span>
+                <span className="text-xs font-medium text-[#5C5751] uppercase tracking-wider">מוצרים</span>
               </div>
-              <div className="text-center px-4 py-2 bg-error-container rounded-xl">
-                <span className="block font-h3 text-h3 text-error">{expiredCount}</span>
-                <span className="font-label-sm text-error uppercase tracking-wider">פגי תוקף</span>
+              <div className="text-center px-4 py-2 bg-[#FFEBEE] rounded-xl border border-[#EF9A9A]">
+                <span className="block text-2xl font-bold text-error">{expiredCount}</span>
+                <span className="text-xs font-medium text-error uppercase tracking-wider">פגי תוקף</span>
               </div>
             </div>
           </div>
         </section>
-        <section className="mb-xl">
-          <div className="relative mb-lg">
+        <section className="mb-8">
+          <div className="relative mb-6">
             <input
-              className="w-full bg-transparent border-b border-primary py-4 px-2 outline-none placeholder:text-outline text-body-lg"
+              className="w-full bg-transparent border-b border-primary py-4 px-2 outline-none placeholder:text-[#9C9691] text-[#1c1b1b] text-base"
               placeholder="חיפוש מוצר..."
               type="text"
               value={searchTerm}
@@ -267,22 +267,22 @@ const InventoryPage = () => {
           <FilterChips filters={filters} activeFilter={activeFilter} onFilterChange={setActiveFilter} />
         </section>
         {loading && (
-          <div className="flex justify-center py-xl">
+          <div className="flex justify-center py-12">
             <span className="material-symbols-outlined animate-spin text-primary text-4xl">progress_activity</span>
           </div>
         )}
         {error && (
-          <p className="text-center text-red-500 py-xl">{error}</p>
+          <p className="text-center text-red-500 py-12">{error}</p>
         )}
         {!loading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredProducts.map((product) => (
               <Link key={product.id} to={`/product/${product.id}`}>
                 <ProductCard product={product} />
               </Link>
             ))}
             {filteredProducts.length === 0 && (
-              <p className="col-span-full text-center text-on-surface-variant py-xl">לא נמצאו מוצרים</p>
+              <p className="col-span-full text-center text-[#5C5751] py-12">לא נמצאו מוצרים</p>
             )}
           </div>
         )}
