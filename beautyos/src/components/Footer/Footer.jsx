@@ -5,7 +5,7 @@ const Footer = () => {
   const location = useLocation();
   const isActive = (path) => {
     if (path === '/inventory') {
-      return location.pathname === '/inventory' || location.pathname.startsWith('/inventory/');
+      return location.pathname === '/inventory' || location.pathname.startsWith('/product/');
     }
     return location.pathname === path;
   };
@@ -20,8 +20,8 @@ const Footer = () => {
         <span className="text-[11px] mt-1">המדף</span>
       </Link>
       <Link
-        to="/dashboard"
-        className={`flex flex-col items-center justify-center ${isActive('/dashboard') ? 'text-primary font-bold' : 'text-stone-400 opacity-70'}`}
+        to="/journal"
+        className={`flex flex-col items-center justify-center ${isActive('/journal') ? 'text-primary font-bold' : 'text-stone-400 opacity-70'}`}
       >
         <span className="material-symbols-outlined">calendar_today</span>
         <span className="text-[11px] mt-1">יומן</span>

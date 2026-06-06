@@ -14,7 +14,7 @@ const statusLabel = { completed: 'בוצע', 'in-progress': 'בתהליך', pend
 
 const calculateStreak = (entries) => {
   if (!entries.length) return 0;
-  const dates = [...new Set(entries.map(e => (e.created_at || '').slice(0, 10)))]
+  const dates = [...new Set(entries.map(e => (e.entry_date || e.created_at || '').slice(0, 10)))]
     .filter(Boolean)
     .sort()
     .reverse();
@@ -50,20 +50,25 @@ const DashboardPage = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
-      setUserName(user.user_metadata?.full_name || user.email?.split('@')[0] || '');
-
-      const [{ data: stepsData }, { data: journalData }] = await Promise.all([
+      const [{ data: stepsData }, { data: journalData }, { data: profileData }] = await Promise.all([
         supabase
           .from('routine_steps')
           .select('*, products(name, brand)')
           .eq('user_id', user.id)
-          .order('order', { ascending: true }),
+          .order('step_order', { ascending: true }),
         supabase
           .from('journal_entries')
-          .select('created_at, moisture_level')
+          .select('entry_date, created_at, moisture_level')
           .eq('user_id', user.id)
-          .order('created_at', { ascending: false }),
+          .order('entry_date', { ascending: false }),
+        supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('user_id', user.id)
+          .maybeSingle(),
       ]);
+
+      setUserName(profileData?.full_name || user.email?.split('@')[0] || '');
 
       if (stepsData) {
         setRoutineSteps(stepsData.map(s => ({
@@ -200,13 +205,13 @@ const DashboardPage = () => {
             </div>
             <span className="material-symbols-outlined text-4xl text-[#2C2C2A] opacity-40 group-hover:opacity-100 transition-opacity">calendar_today</span>
           </Link>
-          <div className="p-8 rounded-3xl flex items-center justify-between cursor-pointer group border border-[#2C2C2A] hover:opacity-90 transition-opacity" style={{ backgroundColor: '#2C2C2A' }}>
+          <Link to="/inventory?openModal=true" className="p-8 rounded-3xl flex items-center justify-between group border border-[#2C2C2A] hover:opacity-90 transition-opacity" style={{ backgroundColor: '#2C2C2A' }}>
             <div className="space-y-1">
               <h5 className="text-xl font-bold text-white">הוסיפי מוצר</h5>
               <p className="text-sm text-white" style={{ opacity: 0.7 }}>סריקה או הזנה ידנית</p>
             </div>
             <span className="material-symbols-outlined text-4xl text-white" style={{ fontVariationSettings: "'FILL' 1" }}>add_circle</span>
-          </div>
+          </Link>
         </section>
       </main>
       <Footer />

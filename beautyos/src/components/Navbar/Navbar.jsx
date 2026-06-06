@@ -54,7 +54,7 @@ const Navbar = () => {
               key={item.to}
               to={item.to}
               onClick={() => setDrawerOpen(false)}
-              className="rounded-2xl bg-surface-container-high px-4 py-3 text-primary font-medium hover:bg-secondary"
+              className="rounded-2xl bg-[#F5EFE8] px-4 py-3 text-[#2C2C2A] font-medium hover:bg-[#EDE6DE] transition-colors"
             >
               {item.label}
             </Link>
@@ -62,7 +62,7 @@ const Navbar = () => {
           {user && (
             <button
               onClick={handleLogout}
-              className="rounded-2xl bg-surface-container-high px-4 py-3 text-primary font-medium hover:bg-secondary text-right"
+              className="rounded-2xl bg-[#F5EFE8] px-4 py-3 text-[#2C2C2A] font-medium hover:bg-[#EDE6DE] transition-colors text-right"
             >
               יציאה
             </button>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 import ProductCard from '../components/ProductCard/ProductCard';
@@ -184,6 +184,17 @@ const InventoryPage = () => {
   const [error,        setError]        = useState('');
   const [modalOpen,    setModalOpen]    = useState(false);
 
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchParams.get('openModal') === 'true') {
+      setModalOpen(true);
+      // Remove the param from the URL so a refresh doesn't reopen the modal
+      navigate('/inventory', { replace: true });
+    }
+  }, []);
+
   const filters = [
     { key: 'all',         label: 'הכל' },
     { key: 'open',        label: 'פתוחים' },
@@ -291,7 +302,7 @@ const InventoryPage = () => {
       {/* FAB */}
       <button
         onClick={() => setModalOpen(true)}
-        className="fixed bottom-28 left-6 w-16 h-16 bg-accent text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-40"
+        className="fixed bottom-28 left-6 w-16 h-16 bg-accent text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-[60]"
       >
         <span className="material-symbols-outlined text-3xl">add</span>
       </button>

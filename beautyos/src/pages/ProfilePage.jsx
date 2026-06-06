@@ -164,7 +164,7 @@ const ProfilePage = () => {
         {!loading && !fetchError && editing && (
           <section className="bg-white p-6 rounded-3xl shadow-sm border border-[#E8E0D8]">
             <h2 className="font-heading text-2xl text-[#2C2C2A] mb-6">
-              {profile ? 'עריכת פ��ופיל' : 'יצירת פרופיל'}
+              {profile ? 'עריכת פרופיל' : 'יצירת פרופיל'}
             </h2>
             <form onSubmit={handleSave} className="space-y-6">
 

@@ -21,6 +21,7 @@ const OnboardingPage = () => {
   const [goal, setGoal] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [confirmationSent, setConfirmationSent] = useState(false);
 
   const skinTypes = [
     { key: 'oily',        label: 'שמן',   icon: 'opacity' },
@@ -45,14 +46,41 @@ const OnboardingPage = () => {
   const handleSubmit = async () => {
     setError('');
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
     setLoading(false);
     if (error) {
       setError(toHebrewError(error.message));
-    } else {
+    } else if (data?.session) {
       navigate('/dashboard');
+    } else {
+      setConfirmationSent(true);
     }
   };
+
+  if (confirmationSent) {
+    return (
+      <div className="min-h-screen bg-background text-text font-body flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center px-6">
+          <div className="w-full max-w-md bg-white rounded-3xl p-8 shadow-sm border border-[#E8E0D8] text-center space-y-4">
+            <span className="material-symbols-outlined text-5xl text-[#C9A882] block">mark_email_read</span>
+            <h2 className="font-heading text-2xl text-[#2C2C2A]">בדקי את האימייל שלך!</h2>
+            <p className="text-base text-[#5C5751]">
+              שלחנו לך קישור לאימות לכתובת <strong className="text-[#2C2C2A]">{email}</strong>.
+              לחצי על הקישור כדי להשלים את ההרשמה.
+            </p>
+            <button
+              onClick={() => navigate('/login')}
+              className="w-full bg-[#2C2C2A] text-white rounded-full py-3 font-medium hover:opacity-90 transition-all"
+            >
+              לדף ההתחברות
+            </button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-text font-body overflow-x-hidden">
