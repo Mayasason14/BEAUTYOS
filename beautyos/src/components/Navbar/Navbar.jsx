@@ -30,7 +30,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setDrawerOpen(false);
-    navigate('/');
+    navigate('/login');
   };
 
   const navItems = user ? authedNavItems : guestNavItems;

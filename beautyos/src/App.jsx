@@ -28,11 +28,30 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const RootRoute = () => {
+  const [session, setSession] = useState(undefined);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (session === undefined) return null;
+  if (!session) return <Navigate to="/login" replace />;
+  return <Navigate to="/dashboard" replace />;
+};
+
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<RootRoute />} />
+        <Route path="/quiz" element={<LandingPage />} />
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/inventory" element={<InventoryPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
